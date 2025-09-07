@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Chat Viewer by Arcy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .whatsapp-bg {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAIRlWElmTU0AKgAAAAgABQESAAMAAAABAAEAAAEaAAUAAAABAAAASgEbAAUAAAABAAAAUgEoAAMAAAABAAIAAAITAAMAAAABAAEAAIdpAAQAAAABAAAAWgAAAAAAAABIAAAAAQAAAEgAAAABAAOgAQADAAAAAQABAACgAgAEAAAAAQAAABigAwAEAAAAAQAAABgAAAAA8A2fuQAAAAlwSFlzAAALEwAACxMBAJqcGAAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAABKJJREFUWAmlV1tsFFUY/s5M2522t7slSgUaKUVMRBoSEy8YEw+k9QEJRcQXDSaEuCBiwAviRdeAG9EYE6NJokZjRA0U8YGJh8YoAbGCbUFQC4VSoS1Vttvuzsw+5+zdnRlIYAEh+ZN3Zv75z/+c/z/n3IsA27bF5eXl9ezs7E2ampqmyMnJAWCbzd5fU1OTCMBTv9Bms9lcV1dX3HEc2PZ4PB4Gg0FvbGxsoz9A5+bmfioqKm5sbm5urG9sCGRlZeXG5ubm3d3dE0SyAnQ6nZ57e3uXl5eXn5mZ6T09Pd0aGhpG2NjYqbq6uiZlZWW9ICL/K6pUKg3Jycl7IiLNAuA8PDy8qKmpubG5uZmPj4+jra3t1dTUdENzc3Pj3Nwc397e/vLz8+PLy8v/pVIpCOBqIqLXA0wMDw/3lJSUnBsbGz9iY2P31NTUtKurq6Wnp+eBgYEDAQEB7gJ+QkND3RUVFbf6+vpbYWFhfX19/QAYHR3dUl5efmpqanra2tpaPj4+NjY2Nl9bW/t9ZmZmR0VFxYFYLPYEBNgnILDRaDQcHx//fXt7+5Odnf1tZWWlj4+PT6mpqV0cHx83NjY2/ampqUa7u7tvA9wcHR39pKen53BwcDA4OHhMRUUFr9drfnp6+p2Ojo5fMzMzT01N/dPh4eH9/f39bWxsvM8AGB4e/n5mZmZvb2+/Ojs7O2FhYXfe3t4+Pz//9vf3f3p5efkhISEuABgeHv6rqKjoxMDAwMDAwCBsbGx+vKys7O7m5uZ3Mpkc+v3+X3Z29iLAnZ2dPYaGhr+amppuqamp3draGkYikcT1dXV1h4eHv1lZWXnIZDIeHR19D/BOTEzMPzk5+dXV1dUCAgJm19fXH4yMjFwEBwdXFxcXdwB6enrS9+/f//r9/u9TU1O/jIyMjI6Ovr68vLzz8PAw4+vr+0dHR8cBYHFx8U+SyeTrubm5P7e2tp4eHBx8CwoK3O3t7T/s7Oz8y8vLA0wA7u/vH56bm/ttZWWleXl5/V9iYqKdnZ2/6+npeQ5weHj47wB8fn5+a2tr65FQKCwuLv6joaHhCwsLW01NTY2NjY3z0tLS8+l0+kdFRcUfwE9MTJwA/D8xMTHRLpfL2dvbe7W2tq5fX1//iY2NVVVVVR8CAgIcAXZ1dd0F/OPj40aBQOCwsLC7ubm56evr+5OtrS1lZWX91dTU1N/f/11dXd0C4Nra2l8lEsmvrq4+Ojs7+7O9vV3f398/Pj7+C4DX1tZWlJSUbKampufn5/f39/f/fXt7+8vOzr6wvb19DQgI8O3t7b/u6+u7AQD/Pzw8nJmYmPgG4ENDQyP6/f5vV1dXt7e390VHR18EBQW5AwOD/gPA8ePHz0lISEhMTBQXFxcXFxf7lpaW5tbW1m1sbPwC4PPz8y/s7e1d5+Pje7W2tXkSiTwG+NLS0l+8vLz87ezs/BsbG2dERETe3t7e8/LybkZGRtYAnJ+fvxcXFz8/Pz9/A/C1tbW2tbV1bWtr+wsLC+tXVVWVlpSUnAYHBz8eGhq6CAwMbIWFhbcAQGlp6d+lpaV3A//f4ODg13Nzc68HBwfPzc3NP3d2dt7c3Nx8CwoK/gcAQGtr62VgYKB3dXX9sLS0lJaUlFxCQkIyAODq6uo2YWHhO8Cf1Go1G/i30Gg0GgwGg0AgwGq1msFgMJPJRPQ+22w2/wz4B5pT0/2BfHvoAAAAAElFTkSuQmCC');
+            background-color: #E5DDD5;
+        }
+
+        .chat-bubble {
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+
+        .chat-in {
+            background-color: #fff;
+        }
+
+        .chat-out {
+            background-color: #dcf8c6;
+        }
+
+        .date-separator {
+            background-color: #e1f2fb;
+            box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+        }
+        
+        #landing-page.drag-over {
+            border-color: #22c55e; /* green-500 */
+            background-color: #f0fdf4; /* green-50 */
+        }
+        
+        .media-card-container {
+            perspective: 1000px;
+        }
+        
+        .media-card {
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+        }
+
+        .media-card:hover {
+            transform: translateZ(20px) rotateX(4deg) rotateY(-8deg);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.3);
+        }
+
+        .highlight {
+            background-color: #fff3a3;
+            border-radius: 3px;
+        }
+        .current-highlight {
+            background-color: #fde047; /* yellow-400 */
+            box-shadow: 0 0 0 2px #facc15; /* yellow-500 */
+        }
+        
+        .mobile-view {
+            max-width: 414px;
+            max-height: 896px;
+            height: 90vh;
+            aspect-ratio: 9 / 16;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        /* For Cropper.js */
+        .cropper-container {
+            direction: ltr;
+            font-size: 0;
+            line-height: 0;
+            position: relative;
+            -ms-touch-action: none;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .cropper-modal {
+            background-color: #000;
+            bottom: 0;
+            left: 0;
+            opacity: .5;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-200">
+
+    <div id="app-container" class="w-full h-screen mx-auto bg-white shadow-lg transition-all duration-500 ease-in-out">
+
+        <!-- Landing Page -->
+        <div id="landing-page" class="flex flex-col items-center justify-center h-full text-center p-8 bg-gray-50 border-4 border-dashed border-gray-300 transition-all duration-300">
+            <svg class="w-24 h-24 text-green-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h6.172a2 2 0 001.414-.586l.828-.828A2 2 0 0117 4h0zM7 16h5.172a2 2 0 001.414-.586l.828-.828A2 2 0 0117 12V7"></path></svg>
+            <h1 class="text-3xl font-bold text-gray-800">WhatsApp Chat Viewer by ARcy</h1>
+            <p class="text-gray-600 mt-2 mb-6">Drag & Drop or Select your exported WhatsApp chat file (.zip or .txt) to view it.</p>
+            <label for="chat-upload" class="cursor-pointer bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-green-600 transition-colors duration-300">
+                Select Chat File
+            </label>
+            <input type="file" id="chat-upload" class="hidden" accept=".zip,.txt">
+            <p id="loading-indicator" class="mt-4 text-gray-600 hidden">
+                <span class="animate-spin inline-block mr-2">...</span>Processing your chat. Please wait...
+            </p>
+             <div class="mt-8 text-sm text-gray-500 max-w-md">
+                <h3 class="font-bold text-gray-600 mb-2">Privacy Note</h3>
+                <p>All processing is done directly in your browser. Your chat files are never uploaded to any server.</p>
+            </div>
+        </div>
+
+        <!-- Chat View -->
+        <div id="chat-view" class="hidden flex-col h-screen">
+            <!-- Header -->
+            <header class="flex items-center justify-between bg-[#00A884] text-white p-2 shadow-md z-10 relative h-[60px]">
+                 <div id="chat-header-main" class="flex items-center w-full transition-all duration-300">
+                    <button id="back-button-chat" class="p-2 rounded-full hover:bg-white/20 mr-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </button>
+                    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mr-3 relative overflow-hidden">
+                        <svg id="default-dp-icon" class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        <img id="chat-dp-image" src="" class="absolute w-full h-full object-cover hidden" alt="Chat DP">
+                    </div>
+                    <div class="flex-grow">
+                        <h2 id="chat-title" class="text-lg font-semibold"></h2>
+                        <p class="text-xs text-gray-200">tap here for contact info</p>
+                    </div>
+                    <div class="relative">
+                        <button id="menu-button" class="p-2 rounded-full hover:bg-white/20">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                        </button>
+                        <div id="dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-20 text-gray-800">
+                            <a href="#" id="search-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Search</a>
+                            <a href="#" id="statistics-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Chat Statistics</a>
+                            <a href="#" id="customize-header-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Customize Header</a>
+                            <a href="#" id="ai-insights-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">✨ Get AI Insights</a>
+                            <a href="#" id="media-viewer-btn" class="hidden px-4 py-2 text-sm hover:bg-gray-100">View Media</a>
+                            <a href="#" id="download-pdf-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Download PDF</a>
+                            <a href="#" id="change-wallpaper-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Change Wallpaper</a>
+                            <a href="#" id="mobile-view-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Mobile View</a>
+                            <a href="#" id="desktop-view-btn" class="hidden px-4 py-2 text-sm hover:bg-gray-100">Desktop View</a>
+                            <hr class="my-1">
+                            <a href="#" id="upload-another-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Upload Another Chat</a>
+                            <a href="#" id="exit-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Exit</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div id="search-bar" class="absolute top-0 left-0 w-full h-full bg-white text-gray-800 p-2 flex items-center hidden transition-all duration-300">
+                    <input type="text" id="search-input" placeholder="Search..." class="flex-grow bg-gray-100 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                    <span id="search-counter" class="text-sm text-gray-500 mx-2 w-24 text-center"></span>
+                    <button id="search-prev-btn" class="p-2 rounded-full hover:bg-gray-200 disabled:opacity-50" disabled><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg></button>
+                    <button id="search-next-btn" class="p-2 rounded-full hover:bg-gray-200 disabled:opacity-50" disabled><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                    <button id="search-close-btn" class="p-2 rounded-full hover:bg-gray-200 ml-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                </div>
+            </header>
+
+            <!-- Messages Container -->
+            <main id="messages-container" class="flex-1 overflow-y-auto p-4 whatsapp-bg">
+                <!-- Messages will be injected here -->
+            </main>
+        </div>
+        
+        <!-- Media Viewer -->
+        <div id="media-view" class="hidden flex-col h-screen">
+             <header class="flex items-center justify-between bg-[#00A884] text-white p-2 shadow-md z-10">
+                <div class="flex items-center">
+                     <button id="back-button-media" class="p-2 rounded-full hover:bg-white/20 mr-2">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    </button>
+                    <h2 class="text-lg font-semibold">Media, Docs, and Links</h2>
+                </div>
+                <div id="media-menu-container" class="relative hidden">
+                    <button id="media-menu-button" class="p-2 rounded-full hover:bg-white/20">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
+                    </button>
+                    <div id="media-dropdown-menu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-20 text-gray-800">
+                        <a href="#" id="download-all-media-btn" class="block px-4 py-2 text-sm hover:bg-gray-100">Download All Media</a>
+                        <a href="#" id="delete-all-media-btn" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete All Media</a>
+                    </div>
+                </div>
+             </header>
+             <main id="media-grid" class="flex-1 overflow-y-auto p-4 bg-gray-100 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                <!-- Media items will be injected here -->
+             </main>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div id="confirmation-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm text-center">
+                <h3 id="confirmation-title" class="text-xl font-bold text-gray-800 mb-2">Are you sure?</h3>
+                <p id="confirmation-message" class="text-gray-600 mb-6">This action cannot be undone.</p>
+                <div class="flex justify-center space-x-4">
+                    <button id="cancel-confirmation-btn" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400">Cancel</button>
+                    <button id="confirm-action-btn" class="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- Wallpaper Cropper Modal -->
+        <div id="wallpaper-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-4 max-w-lg w-full">
+                <h3 class="text-xl font-bold mb-4">Crop Wallpaper</h3>
+                <div class="max-h-[60vh]">
+                    <img id="wallpaper-image-to-crop" src="" alt="Wallpaper Preview">
+                </div>
+                <div class="flex justify-end mt-4 space-x-2">
+                    <button id="cancel-crop-btn" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</button>
+                    <button id="confirm-crop-btn" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Set Wallpaper</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallpaper Options Modal -->
+        <div id="wallpaper-options-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg p-6 w-80">
+                <h3 class="text-xl font-bold mb-4">Change Wallpaper</h3>
+                <div class="flex flex-col space-y-3">
+                    <button id="upload-new-wallpaper-btn" class="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Upload Image</button>
+                    <button id="set-default-wallpaper-btn" class="w-full px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Use Default</button>
+                </div>
+                <div class="text-right mt-4">
+                     <button id="cancel-wallpaper-options-btn" class="text-sm text-gray-600 hover:underline">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Customize Header Modal -->
+        <div id="customize-header-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-lg p-6 w-full max-w-sm">
+                <h3 class="text-xl font-bold mb-4">Customize Header</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label for="custom-name-input" class="block text-sm font-medium text-gray-700">Chat Name</label>
+                        <input type="text" id="custom-name-input" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Profile Picture (DP)</label>
+                        <div class="mt-1 flex items-center space-x-4">
+                            <img id="dp-preview" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="h-16 w-16 rounded-full bg-gray-200 object-cover">
+                            <button id="upload-dp-btn" type="button" class="px-4 py-2 bg-gray-200 text-sm font-medium rounded-md hover:bg-gray-300">Upload Image</button>
+                            <input type="file" id="dp-upload-input" class="hidden" accept="image/*">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6 space-x-2">
+                    <button id="cancel-customize-btn" class="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400">Cancel</button>
+                    <button id="save-customize-btn" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Insights Modal -->
+        <div id="ai-insights-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <span class="text-2xl mr-3">✨</span> AI Insights
+                    </h3>
+                    <button id="close-ai-modal-btn" class="text-3xl font-light text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                <div class="p-6 overflow-y-auto">
+                    <!-- Loading State -->
+                    <div id="ai-loading-state" class="text-center py-8">
+                        <svg class="animate-spin h-8 w-8 text-green-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="text-gray-600">Analyzing your chat with Gemini... Please wait.</p>
+                    </div>
+                    <!-- Error State -->
+                     <div id="ai-error-state" class="hidden text-center py-8">
+                        <p class="text-red-500 font-semibold">Could not generate insights.</p>
+                        <p class="text-gray-600 mt-2">The AI model might be busy or an error occurred. Please try again later.</p>
+                    </div>
+                    <!-- Results -->
+                    <div id="ai-results-container" class="hidden space-y-6">
+                        <!-- AI Analysis Section -->
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-bold text-xl text-gray-700 mb-3 border-b pb-2">AI-Powered Analysis</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold text-gray-700">Summary</h5>
+                                    <p id="ai-summary" class="text-gray-600"></p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700">Key Topics</h5>
+                                    <ul id="ai-topics" class="list-disc list-inside text-gray-600 space-y-1"></ul>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-gray-700">Sentiment</h5>
+                                    <div class="flex items-center">
+                                        <strong id="ai-sentiment-overall" class="text-gray-800 mr-2"></strong>
+                                        <p id="ai-sentiment-analysis" class="text-gray-600"></p>
+                                    </div>
+                                </div>
+                                 <div>
+                                    <h5 class="font-semibold text-gray-700">Action Items</h5>
+                                    <ul id="ai-action-items" class="list-disc list-inside text-gray-600 space-y-1"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Modal -->
+        <div id="statistics-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+                <div class="flex justify-between items-center p-4 border-b">
+                    <h3 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Chat Statistics
+                    </h3>
+                    <button id="close-stats-modal-btn" class="text-3xl font-light text-gray-500 hover:text-gray-800">&times;</button>
+                </div>
+                <div id="stats-container" class="p-6 overflow-y-auto space-y-6">
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="bg-blue-50 p-4 rounded-lg"><div class="text-2xl font-bold text-blue-600" id="stats-total-messages"></div><div class="text-sm text-gray-500">Total Messages</div></div>
+                        <div class="bg-green-50 p-4 rounded-lg"><div class="text-2xl font-bold text-green-600" id="stats-sent-messages"></div><div class="text-sm text-gray-500">Sent</div></div>
+                        <div class="bg-red-50 p-4 rounded-lg"><div class="text-2xl font-bold text-red-600" id="stats-received-messages"></div><div class="text-sm text-gray-500">Received</div></div>
+                        <div class="bg-yellow-50 p-4 rounded-lg"><div class="text-2xl font-bold text-yellow-600" id="stats-total-media"></div><div class="text-sm text-gray-500">Media Shared</div></div>
+                    </div>
+                    
+                    <!-- Activity Graph -->
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-xl text-gray-700 mb-3">Message Activity</h4>
+                        <div><canvas id="activity-chart"></canvas></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Leaderboard / Fun Facts -->
+                        <div class="lg:col-span-1 bg-gray-50 p-4 rounded-lg space-y-4">
+                            <div id="leaderboard-container">
+                                <h4 class="font-bold text-xl text-gray-700 mb-2">Leaderboard</h4>
+                                <div id="stats-leaderboard" class="space-y-2"></div>
+                            </div>
+                            <div id="fun-facts-container">
+                                 <h4 class="font-bold text-xl text-gray-700 mb-2">Fun Facts</h4>
+                                 <ul class="space-y-2 text-sm text-gray-600">
+                                     <li id="stats-active-day"></li>
+                                     <li id="stats-active-time"></li>
+                                 </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Word & Emoji Frequency -->
+                        <div class="lg:col-span-2 bg-gray-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-xl text-gray-700 mb-2">Most Used Words</h4>
+                                    <div id="stats-word-frequency" class="text-sm text-gray-600 space-y-1"></div>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-xl text-gray-700 mb-2">Most Used Emojis</h4>
+                                    <div id="stats-emoji-frequency" class="text-2xl space-y-2"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PDF Generation Overlay -->
+        <div id="pdf-loading-overlay" class="hidden fixed inset-0 bg-black bg-opacity-75 flex flex-col items-center justify-center z-50 text-white">
+            <svg class="animate-spin h-10 w-10 text-white mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p id="pdf-progress-text">Generating PDF...</p>
+            <p id="pdf-progress-counter" class="text-sm mt-1"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const appContainer = document.getElementById('app-container');
+            const landingPage = document.getElementById('landing-page');
+            const chatView = document.getElementById('chat-view');
+            const mediaView = document.getElementById('media-view');
+            const chatUpload = document.getElementById('chat-upload');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const chatTitle = document.getElementById('chat-title');
+            const messagesContainer = document.getElementById('messages-container');
+            const menuButton = document.getElementById('menu-button');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            const uploadAnotherBtn = document.getElementById('upload-another-btn');
+            const downloadPdfBtn = document.getElementById('download-pdf-btn');
+            const changeWallpaperBtn = document.getElementById('change-wallpaper-btn');
+            const aiInsightsBtn = document.getElementById('ai-insights-btn');
+            const mediaViewerBtn = document.getElementById('media-viewer-btn');
+            const mediaGrid = document.getElementById('media-grid');
+            const exitBtn = document.getElementById('exit-btn');
+            const backButtonChat = document.getElementById('back-button-chat');
+            const backButtonMedia = document.getElementById('back-button-media');
+            const defaultDpIcon = document.getElementById('default-dp-icon');
+            const chatDpImage = document.getElementById('chat-dp-image');
+            const mobileViewBtn = document.getElementById('mobile-view-btn');
+            const desktopViewBtn = document.getElementById('desktop-view-btn');
+
+            // Search Elements
+            const searchBtn = document.getElementById('search-btn');
+            const searchBar = document.getElementById('search-bar');
+            const searchInput = document.getElementById('search-input');
+            const searchCounter = document.getElementById('search-counter');
+            const searchPrevBtn = document.getElementById('search-prev-btn');
+            const searchNextBtn = document.getElementById('search-next-btn');
+            const searchCloseBtn = document.getElementById('search-close-btn');
+            const chatHeaderMain = document.getElementById('chat-header-main');
+
+            // Media View Menu
+            const mediaMenuContainer = document.getElementById('media-menu-container');
+            const mediaMenuButton = document.getElementById('media-menu-button');
+            const mediaDropdownMenu = document.getElementById('media-dropdown-menu');
+            const downloadAllMediaBtn = document.getElementById('download-all-media-btn');
+            const deleteAllMediaBtn = document.getElementById('delete-all-media-btn');
+            
+            // Confirmation Modal
+            const confirmationModal = document.getElementById('confirmation-modal');
+            const confirmationTitle = document.getElementById('confirmation-title');
+            const confirmationMessage = document.getElementById('confirmation-message');
+            const cancelConfirmationBtn = document.getElementById('cancel-confirmation-btn');
+            const confirmActionBtn = document.getElementById('confirm-action-btn');
+            let confirmCallback = null;
+
+            // Wallpaper Modals
+            const wallpaperModal = document.getElementById('wallpaper-modal');
+            const imageToCropElement = document.getElementById('wallpaper-image-to-crop');
+            const cancelCropBtn = document.getElementById('cancel-crop-btn');
+            const confirmCropBtn = document.getElementById('confirm-crop-btn');
+            const wallpaperOptionsModal = document.getElementById('wallpaper-options-modal');
+            const uploadNewWallpaperBtn = document.getElementById('upload-new-wallpaper-btn');
+            const setDefaultWallpaperBtn = document.getElementById('set-default-wallpaper-btn');
+            const cancelWallpaperOptionsBtn = document.getElementById('cancel-wallpaper-options-btn');
+            let cropper;
+            
+            // Customize Header Modal
+            const customizeHeaderBtn = document.getElementById('customize-header-btn');
+            const customizeHeaderModal = document.getElementById('customize-header-modal');
+            const customNameInput = document.getElementById('custom-name-input');
+            const dpPreview = document.getElementById('dp-preview');
+            const uploadDpBtn = document.getElementById('upload-dp-btn');
+            const dpUploadInput = document.getElementById('dp-upload-input');
+            const cancelCustomizeBtn = document.getElementById('cancel-customize-btn');
+            const saveCustomizeBtn = document.getElementById('save-customize-btn');
+
+            // AI Insights Modal
+            const aiInsightsModal = document.getElementById('ai-insights-modal');
+            const closeAiModalBtn = document.getElementById('close-ai-modal-btn');
+            const aiLoadingState = document.getElementById('ai-loading-state');
+            const aiErrorState = document.getElementById('ai-error-state');
+            const aiResultsContainer = document.getElementById('ai-results-container');
+            const aiSummary = document.getElementById('ai-summary');
+            const aiTopics = document.getElementById('ai-topics');
+            const aiSentimentOverall = document.getElementById('ai-sentiment-overall');
+            const aiSentimentAnalysis = document.getElementById('ai-sentiment-analysis');
+            const aiActionItems = document.getElementById('ai-action-items');
+            
+            // Statistics Modal
+            const statisticsBtn = document.getElementById('statistics-btn');
+            const statisticsModal = document.getElementById('statistics-modal');
+            const closeStatsModalBtn = document.getElementById('close-stats-modal-btn');
+            const activityChartCanvas = document.getElementById('activity-chart');
+            let activityChartInstance = null;
+
+
+            // PDF Loading Overlay
+            const pdfLoadingOverlay = document.getElementById('pdf-loading-overlay');
+            const pdfProgressText = document.getElementById('pdf-progress-text');
+            const pdfProgressCounter = document.getElementById('pdf-progress-counter');
+
+            // App State
+            let mediaFiles = {}; // Store media blobs { filename: {url, blob, mediaType} }
+            let chatMessages = [];
+            let chatContact = '';
+            let chatContainsOmittedMedia = false;
+            let searchMatches = [];
+            let currentSearchIndex = -1;
+            let customChatName = null;
+            let customDpUrl = null;
+            let currentViewMode = 'desktop';
+            
+            // --- Event Listeners ---
+            
+            chatUpload.addEventListener('change', (e) => handleFileSelect(e.target.files));
+            menuButton.addEventListener('click', toggleMenu);
+            exitBtn.addEventListener('click', exitToLanding);
+            backButtonChat.addEventListener('click', exitToLanding);
+            backButtonMedia.addEventListener('click', () => toggleView('chat'));
+            uploadAnotherBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                chatUpload.click();
+                toggleMenu(false);
+            });
+            downloadPdfBtn.addEventListener('click', generatePdf);
+            
+            // Media Menu Listeners
+            mediaMenuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mediaDropdownMenu.classList.toggle('hidden');
+            });
+            downloadAllMediaBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mediaDropdownMenu.classList.add('hidden');
+                downloadAllMedia();
+            });
+            deleteAllMediaBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                mediaDropdownMenu.classList.add('hidden');
+                showConfirmation('Delete All Media', 'This will only clear media from the viewer, not from your chat. Continue?', deleteAllMedia);
+            });
+
+            changeWallpaperBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(false);
+                wallpaperOptionsModal.classList.remove('hidden');
+            });
+            mediaViewerBtn.addEventListener('click', () => toggleView('media'));
+
+            // View Mode Listeners
+            mobileViewBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                appContainer.classList.add('mobile-view');
+                currentViewMode = 'mobile';
+                mobileViewBtn.classList.add('hidden');
+                desktopViewBtn.classList.remove('hidden');
+                toggleMenu(false);
+            });
+            desktopViewBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                appContainer.classList.remove('mobile-view');
+                currentViewMode = 'desktop';
+                desktopViewBtn.classList.add('hidden');
+                mobileViewBtn.classList.remove('hidden');
+                toggleMenu(false);
+            });
+
+            // Confirmation Modal Listeners
+            cancelConfirmationBtn.addEventListener('click', () => confirmationModal.classList.add('hidden'));
+            confirmActionBtn.addEventListener('click', () => {
+                if(typeof confirmCallback === 'function') {
+                    confirmCallback();
+                }
+                confirmationModal.classList.add('hidden');
+            });
+
+
+            // AI Insights Listener
+            aiInsightsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(false);
+                generateInsights();
+            });
+            closeAiModalBtn.addEventListener('click', () => aiInsightsModal.classList.add('hidden'));
+
+            // Statistics Listener
+            statisticsBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(false);
+                generateAndShowStatistics();
+            });
+            closeStatsModalBtn.addEventListener('click', () => statisticsModal.classList.add('hidden'));
+            
+            // Customize Header Listeners
+            customizeHeaderBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(false);
+                customNameInput.value = customChatName || chatTitle.textContent;
+                dpPreview.src = customDpUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                customizeHeaderModal.classList.remove('hidden');
+            });
+            cancelCustomizeBtn.addEventListener('click', () => customizeHeaderModal.classList.add('hidden'));
+            saveCustomizeBtn.addEventListener('click', saveCustomHeader);
+            uploadDpBtn.addEventListener('click', () => dpUploadInput.click());
+            dpUploadInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        dpPreview.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+
+            // Wallpaper options modal listeners
+            cancelWallpaperOptionsBtn.addEventListener('click', () => wallpaperOptionsModal.classList.add('hidden'));
+            uploadNewWallpaperBtn.addEventListener('click', () => {
+                wallpaperOptionsModal.classList.add('hidden');
+                triggerWallpaperUpload();
+            });
+            setDefaultWallpaperBtn.addEventListener('click', () => {
+                messagesContainer.style.backgroundImage = '';
+                messagesContainer.style.backgroundColor = '';
+                wallpaperOptionsModal.classList.add('hidden');
+            });
+
+            // Drag and Drop Listeners
+            landingPage.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                landingPage.classList.add('drag-over');
+            });
+
+            landingPage.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                landingPage.classList.remove('drag-over');
+            });
+
+            landingPage.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                landingPage.classList.remove('drag-over');
+                handleFileSelect(e.dataTransfer.files);
+            });
+            
+            // Search Listeners
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleMenu(false);
+                searchBar.classList.remove('hidden');
+                chatHeaderMain.classList.add('hidden');
+                searchInput.focus();
+            });
+            searchCloseBtn.addEventListener('click', clearSearch);
+            searchInput.addEventListener('input', performSearch);
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (e.shiftKey) {
+                        navigateToMatch(currentSearchIndex - 1);
+                    } else {
+                        navigateToMatch(currentSearchIndex + 1);
+                    }
+                }
+            });
+            searchNextBtn.addEventListener('click', () => navigateToMatch(currentSearchIndex + 1));
+            searchPrevBtn.addEventListener('click', () => navigateToMatch(currentSearchIndex - 1));
+
+
+            // Close menus if clicked outside
+            document.addEventListener('click', (e) => {
+                if (!menuButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                    dropdownMenu.classList.add('hidden');
+                }
+                if (!mediaMenuButton.contains(e.target) && !mediaDropdownMenu.contains(e.target)) {
+                    mediaDropdownMenu.classList.add('hidden');
+                }
+            });
+
+            // --- Core Functions ---
+
+            function showLoading(isShowing) {
+                loadingIndicator.classList.toggle('hidden', !isShowing);
+            }
+
+            async function handleFileSelect(files) {
+                if (!files || files.length === 0) return;
+                const file = files[0];
+
+                resetState();
+                showLoading(true);
+                toggleMenu(false);
+
+                try {
+                    if (file.name.endsWith('.zip')) {
+                        await processZipFile(file);
+                    } else if (file.name.endsWith('.txt')) {
+                        const content = await file.text();
+                        chatContact = file.name.replace('WhatsApp Chat with ', '').replace('.txt', '');
+                        processChatContent(content);
+                    } else {
+                        alert('Unsupported file type. Please upload a .zip or .txt file.');
+                        throw new Error('Unsupported file type');
+                    }
+
+                    renderChat();
+                    toggleView('chat');
+                    const hasMedia = Object.keys(mediaFiles).length > 0;
+                    mediaViewerBtn.classList.toggle('hidden', !hasMedia && !chatContainsOmittedMedia);
+                    mediaMenuContainer.classList.toggle('hidden', !hasMedia);
+                    
+                } catch (error) {
+                    console.error('Error processing file:', error);
+                    alert('Could not process the chat file. It might be in an unsupported format.');
+                    exitToLanding();
+                } finally {
+                    showLoading(false);
+                    chatUpload.value = ''; // Reset file input
+                }
+            }
+            
+            async function processZipFile(file) {
+                const zip = await JSZip.loadAsync(file);
+                let chatFile = zip.file('_chat.txt');
+                 if (!chatFile) { // Fallback for different export names
+                    const txtFiles = Object.keys(zip.files).filter(name => name.endsWith('.txt'));
+                    if(txtFiles.length > 0) {
+                        chatFile = zip.file(txtFiles[0]);
+                    } else {
+                        throw new Error('No .txt chat file found in the zip archive.');
+                    }
+                }
+                
+                chatContact = file.name.replace('WhatsApp Chat with ', '').replace('.zip', '');
+                const content = await chatFile.async('string');
+                
+                // Extract media
+                const mediaPromises = [];
+                zip.forEach((relativePath, zipEntry) => {
+                    if (!zipEntry.dir && !relativePath.endsWith('.txt')) {
+                        const promise = zipEntry.async('blob').then(blob => {
+                            const url = URL.createObjectURL(blob);
+                            const mediaType = getMediaType(relativePath, blob.type);
+                            mediaFiles[relativePath] = { url, blob, mediaType, name: relativePath };
+                        });
+                        mediaPromises.push(promise);
+                    }
+                });
+                await Promise.all(mediaPromises);
+                
+                processChatContent(content);
+            }
+            
+            function getMediaType(filename, mimeType) {
+                const extension = filename.split('.').pop().toLowerCase();
+                if (mimeType.startsWith('image/')) return 'image';
+                if (mimeType.startsWith('video/')) return 'video';
+                if (mimeType.startsWith('audio/') || ['opus', 'ogg', 'mp3', 'aac', 'm4a'].includes(extension)) return 'audio';
+                if (['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'zip', 'rar', 'vcf'].includes(extension)) return 'document';
+                return 'document'; // Default for unknown types
+            }
+
+            function processChatContent(content) {
+                const regex = /^\[?(\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}), (\d{1,2}:\d{2}(?::\d{2})?(?: [APM]{2})?)\]? (?:- )?([^:]+): ([\s\S]+)/;
+                
+                const lines = content.split('\n').filter(line => line.trim());
+                let currentMessage = null;
+                const participants = new Set();
+                chatContainsOmittedMedia = /omitted|‎/.test(content);
+                
+                lines.forEach(line => {
+                    const match = line.match(regex);
+                    if (match) {
+                        if (currentMessage) chatMessages.push(currentMessage);
+                        
+                        const [ , date, time, sender, message] = match;
+                        participants.add(sender);
+                        
+                        currentMessage = {
+                            date,
+                            time,
+                            sender,
+                            message: message.trim(),
+                            timestamp: parseDateTime(date, time)
+                        };
+                    } else if (currentMessage) {
+                        currentMessage.message += '\n' + line.trim();
+                    }
+                });
+                if (currentMessage) chatMessages.push(currentMessage);
+
+                // --- Improved User Identification Logic ---
+                const participantsArray = Array.from(participants);
+                let userSenderName = null;
+                
+                // Set chat title first
+                if (participantsArray.length <= 2) {
+                     chatTitle.textContent = chatContact || "Chat";
+                } else {
+                     chatTitle.textContent = chatContact || "Group Chat";
+                }
+
+                if (participantsArray.length <= 2 && chatTitle.textContent !== "Chat") {
+                    // For 1-on-1 chats, the user is the one NOT named in the chat title.
+                    userSenderName = participantsArray.find(p => p !== chatTitle.textContent);
+                }
+                
+                // Fallback for group chats or if the above failed: most active person is the user.
+                if (!userSenderName && participantsArray.length > 0) {
+                    const messageCounts = participantsArray.reduce((acc, p) => ({ ...acc, [p]: 0 }), {});
+                    chatMessages.forEach(msg => {
+                        if (messageCounts.hasOwnProperty(msg.sender)) {
+                            messageCounts[msg.sender]++;
+                        }
+                    });
+                    userSenderName = Object.keys(messageCounts).reduce((a, b) => messageCounts[a] > messageCounts[b] ? a : b, '');
+                }
+
+                chatMessages.forEach(msg => {
+                    msg.isUser = msg.sender === userSenderName;
+                });
+            }
+
+            function renderChat() {
+                messagesContainer.innerHTML = '';
+                let lastDate = null;
+
+                chatMessages.forEach(msg => {
+                    const msgDate = msg.timestamp.toDateString();
+                    if (msgDate !== lastDate) {
+                        messagesContainer.appendChild(createDateSeparator(msg.timestamp));
+                        lastDate = msgDate;
+                    }
+                    messagesContainer.appendChild(createMessageBubble(msg));
+                });
+                // Scroll to the latest message
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            
+            function createMessageBubble(msg) {
+                const bubbleWrapper = document.createElement('div');
+                bubbleWrapper.className = `flex my-1 ${msg.isUser ? 'justify-end' : 'justify-start'}`;
+
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble rounded-lg px-3 py-2 shadow-sm relative ${msg.isUser ? 'chat-out' : 'chat-in'}`;
+                
+                let contentHTML = '';
+                // Add sender name for group chats
+                if (!msg.isUser && document.getElementById('chat-title').textContent.toLowerCase().includes('group')) {
+                    contentHTML += `<div class="font-bold text-sm text-purple-600">${msg.sender}</div>`;
+                }
+
+                // Check for media. New regex also catches "‎image omitted" etc.
+                const mediaMatch = msg.message.match(/<attached: (.+?)>|\(file attached\)|(‎image omitted)|(‎video omitted)|(‎sticker omitted)|(‎audio omitted)|(‎document omitted)/);
+                if (mediaMatch) {
+                     const fileName = mediaMatch[1] || msg.message.replace(/\(file attached\)/, '').trim();
+                     const media = mediaFiles[fileName];
+                     const caption = mediaMatch[1] ? msg.message.replace(mediaMatch[0], '').trim() : '';
+
+                     if (media) {
+                         if (media.mediaType === 'image') {
+                            contentHTML += `<img src="${media.url}" alt="${fileName}" class="rounded-md max-w-xs my-1 cursor-pointer" onclick="window.open('${media.url}')">`;
+                         } else if (media.mediaType === 'video') {
+                            contentHTML += `<video controls src="${media.url}" class="rounded-md max-w-xs my-1"></video>`;
+                         } else if (media.mediaType === 'audio') {
+                            contentHTML += `<audio controls src="${media.url}" class="w-full my-1"></audio>`;
+                         } else {
+                            contentHTML += `<a href="${media.url}" download="${media.name}" class="text-blue-600 underline flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>${fileName}</a>`;
+                         }
+                         if (caption) {
+                             contentHTML += `<div data-searchable>${caption.replace(/\n/g, '<br>')}</div>`;
+                         }
+                     } else {
+                        // Display a styled placeholder for omitted media
+                        const omittedType = mediaMatch[0].includes('image') ? 'Image' :
+                                            mediaMatch[0].includes('video') ? 'Video' :
+                                            mediaMatch[0].includes('sticker') ? 'Sticker' :
+                                            mediaMatch[0].includes('audio') ? 'Audio' :
+                                            mediaMatch[0].includes('document') ? 'Document' : 'Media';
+                        
+                        let omittedText = fileName ? fileName : `${omittedType} omitted`;
+                        
+                        contentHTML += `
+                            <div class="flex items-center bg-gray-200 p-2 rounded-md opacity-80">
+                                <svg class="w-6 h-6 text-gray-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span class="text-sm text-gray-600 italic truncate">${omittedText}</span>
+                            </div>`;
+                        if (caption) {
+                            contentHTML += `<div class="mt-1" data-searchable>${caption.replace(/\n/g, '<br>')}</div>`;
+                        }
+                     }
+                } else {
+                    contentHTML += `<div data-searchable>${msg.message.replace(/\n/g, '<br>')}</div>`;
+                }
+
+                bubble.innerHTML = contentHTML;
+                
+                const timeEl = document.createElement('div');
+                timeEl.className = 'text-xs text-gray-500 text-right mt-1';
+                timeEl.textContent = msg.time.replace(/:\d{2} /, ' ').replace(' AM', 'am').replace(' PM', 'pm'); // Shorten time
+                bubble.appendChild(timeEl);
+
+                bubbleWrapper.appendChild(bubble);
+                return bubbleWrapper;
+            }
+            
+            function createDateSeparator(date) {
+                const separator = document.createElement('div');
+                separator.className = 'flex justify-center my-4';
+                const content = document.createElement('div');
+                content.className = 'date-separator text-sm text-gray-700 px-3 py-1 rounded-full';
+                
+                const today = new Date();
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+
+                if (date.toDateString() === today.toDateString()) {
+                    content.textContent = 'Today';
+                } else if (date.toDateString() === yesterday.toDateString()) {
+                    content.textContent = 'Yesterday';
+                } else {
+                    content.textContent = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
+                separator.appendChild(content);
+                return separator;
+            }
+            
+            // --- Statistics Functions ---
+            function generateAndShowStatistics() {
+                const stats = calculateStats();
+                populateStatsModal(stats);
+                renderActivityChart(stats.activityData);
+                statisticsModal.classList.remove('hidden');
+            }
+
+            function calculateStats() {
+                const totalMessages = chatMessages.length;
+                const sentMessages = chatMessages.filter(m => m.isUser).length;
+                const receivedMessages = totalMessages - sentMessages;
+                let mediaCount = Object.keys(mediaFiles).length;
+                if (mediaCount === 0) { // Fallback for txt files
+                     mediaCount = chatMessages.filter(m => /omitted|‎|attached/.test(m.message)).length;
+                }
+
+                const fullChatText = chatMessages.map(msg => msg.message).join('\n');
+                
+                // Word Frequency
+                const words = fullChatText.toLowerCase().match(/\b(\w{3,})\b/g) || [];
+                const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'in', 'on', 'at', 'to', 'for', 'of', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'its', 'our', 'their', 'this', 'that', 'with', 'not', 'omitted', 'media', 'image', 'video', 'audio', 'file', 'attached']);
+                const wordCounts = words.reduce((acc, word) => {
+                    if (!stopWords.has(word)) acc[word] = (acc[word] || 0) + 1;
+                    return acc;
+                }, {});
+                const sortedWords = Object.entries(wordCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+                // Emoji Frequency
+                const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu;
+                const emojis = fullChatText.match(emojiRegex) || [];
+                const emojiCounts = emojis.reduce((acc, emoji) => {
+                    acc[emoji] = (acc[emoji] || 0) + 1; return acc;
+                }, {});
+                const sortedEmojis = Object.entries(emojiCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+                // Leaderboard
+                const messageCounts = {};
+                chatMessages.forEach(msg => {
+                    messageCounts[msg.sender] = (messageCounts[msg.sender] || 0) + 1;
+                });
+                const leaderboard = Object.entries(messageCounts).sort((a, b) => b[1] - a[1]);
+
+                // Activity
+                const activityByDay = {};
+                const activityByHour = new Array(24).fill(0);
+                const activityByWeekday = new Array(7).fill(0);
+                
+                chatMessages.forEach(msg => {
+                    const dateKey = msg.timestamp.toISOString().split('T')[0];
+                    activityByDay[dateKey] = (activityByDay[dateKey] || 0) + 1;
+                    activityByHour[msg.timestamp.getHours()]++;
+                    activityByWeekday[msg.timestamp.getDay()]++;
+                });
+
+                const mostActiveDayIndex = activityByWeekday.indexOf(Math.max(...activityByWeekday));
+                const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const mostActiveDay = weekdays[mostActiveDayIndex];
+                
+                const mostActiveHourIndex = activityByHour.indexOf(Math.max(...activityByHour));
+                const timeOfDay = mostActiveHourIndex < 6 ? 'Late Night' : mostActiveHourIndex < 12 ? 'Morning' : mostActiveHourIndex < 17 ? 'Afternoon' : mostActiveHourIndex < 21 ? 'Evening' : 'Night';
+
+                // Chart Data
+                const dayKeys = Object.keys(activityByDay).sort();
+                const useMonths = dayKeys.length > 60;
+                let activityData;
+
+                if (useMonths) {
+                    const activityByMonth = {};
+                    dayKeys.forEach(dayKey => {
+                        const monthKey = dayKey.substring(0, 7); // YYYY-MM
+                        activityByMonth[monthKey] = (activityByMonth[monthKey] || 0) + activityByDay[dayKey];
+                    });
+                    activityData = {
+                        labels: Object.keys(activityByMonth).map(m => new Date(m + '-02').toLocaleString('default', { month: 'short', year: '2-digit' })),
+                        data: Object.values(activityByMonth)
+                    };
+                } else {
+                     activityData = {
+                        labels: dayKeys.map(d => new Date(d + 'T12:00:00Z').toLocaleDateString('default', { month: 'short', day: 'numeric' })),
+                        data: dayKeys.map(d => activityByDay[d])
+                    };
+                }
+
+                return { totalMessages, sentMessages, receivedMessages, mediaCount, sortedWords, sortedEmojis, leaderboard, mostActiveDay, timeOfDay, activityData };
+            }
+
+            function populateStatsModal(stats) {
+                document.getElementById('stats-total-messages').textContent = stats.totalMessages;
+                document.getElementById('stats-sent-messages').textContent = stats.sentMessages;
+                document.getElementById('stats-received-messages').textContent = stats.receivedMessages;
+                document.getElementById('stats-total-media').textContent = stats.mediaCount;
+
+                const wordFreqEl = document.getElementById('stats-word-frequency');
+                wordFreqEl.innerHTML = stats.sortedWords.map(entry => `<div><span class="font-semibold">${entry[0]}</span>: ${entry[1]}</div>`).join('') || 'Not enough data.';
+
+                const emojiFreqEl = document.getElementById('stats-emoji-frequency');
+                emojiFreqEl.innerHTML = stats.sortedEmojis.map(entry => `<div><span>${entry[0]}</span><span class="text-sm text-gray-500 ml-2">x ${entry[1]}</span></div>`).join('') || 'No emojis found.';
+                
+                const leaderboardContainer = document.getElementById('leaderboard-container');
+                const leaderboardEl = document.getElementById('stats-leaderboard');
+                if (stats.leaderboard.length > 2) {
+                    leaderboardContainer.style.display = 'block';
+                    leaderboardEl.innerHTML = stats.leaderboard.slice(0, 5).map((p, i) => `
+                        <div class="flex items-center text-sm">
+                            <span class="font-bold mr-2">${i+1}.</span>
+                            <span class="flex-grow truncate">${p[0]}</span>
+                            <span class="font-semibold">${p[1]}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    leaderboardContainer.style.display = 'none';
+                }
+
+                document.getElementById('stats-active-day').innerHTML = `<strong>Most Active Day:</strong> ${stats.mostActiveDay}`;
+                document.getElementById('stats-active-time').innerHTML = `<strong>Most Active Time:</strong> ${stats.timeOfDay}`;
+            }
+
+            function renderActivityChart(activityData) {
+                if(activityChartInstance) {
+                    activityChartInstance.destroy();
+                }
+                const ctx = activityChartCanvas.getContext('2d');
+                activityChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: activityData.labels,
+                        datasets: [{
+                            label: 'Messages',
+                            data: activityData.data,
+                            backgroundColor: 'rgba(0, 168, 132, 0.6)',
+                            borderColor: 'rgba(0, 168, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } },
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+
+            // --- Gemini API & Statistical Insights ---
+            function generateInsights() {
+                // Show modal and loading state
+                aiInsightsModal.classList.remove('hidden');
+                aiLoadingState.classList.remove('hidden');
+                aiResultsContainer.classList.add('hidden');
+                aiErrorState.classList.add('hidden');
+
+                const fullChatText = chatMessages.map(msg => `${msg.sender}: ${msg.message}`).join('\n');
+                getAiAnalysis(fullChatText);
+            }
+
+            async function getAiAnalysis(fullChatText) {
+                const participants = Array.from(new Set(chatMessages.map(msg => msg.sender))).join(', ');
+                const userSender = chatMessages.find(msg => msg.isUser)?.sender || 'the user who exported the chat';
+                
+                const systemPrompt = `You are an expert chat analyst. Analyze the following WhatsApp conversation and provide a detailed analysis in a JSON format. The chat is between these participants: ${participants}. The user who exported the chat is likely ${userSender}. Provide the output as a single, valid JSON object and nothing else.`;
+                const userQuery = `
+                    Analyze this chat:
+                    """
+                    ${fullChatText.substring(0, 10000)}
+                    """
+                    
+                    Provide the output as a single JSON object with the following structure:
+                    {
+                      "summary": "A concise, neutral, one-paragraph summary of the entire conversation.",
+                      "key_topics": ["A list of the 3-5 most important topics discussed."],
+                      "sentiment": {
+                        "overall": "A single word describing the overall sentiment (e.g., 'Positive', 'Neutral', 'Negative', 'Mixed').",
+                        "analysis": "A brief one-sentence explanation for the sentiment rating."
+                      },
+                      "action_items": ["A list of clear action items, decisions, or questions that were raised and require a follow-up. If none, provide an empty array."]
+                    }
+                `;
+
+                const apiKey = ""; 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: userQuery }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { responseMimeType: "application/json" }
+                };
+                
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+
+                    const result = await response.json();
+                    const insightsText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!insightsText) throw new Error("No content in API response.");
+
+                    const insights = JSON.parse(insightsText);
+                    displayAiInsights(insights);
+
+                } catch (error) {
+                    console.error('Error fetching AI insights:', error);
+                    aiLoadingState.classList.add('hidden');
+                    aiErrorState.classList.remove('hidden');
+                }
+            }
+            
+            function displayAiInsights(insights) {
+                aiSummary.textContent = insights.summary || 'No summary available.';
+                
+                aiTopics.innerHTML = '';
+                (insights.key_topics || []).forEach(topic => {
+                    const li = document.createElement('li');
+                    li.textContent = topic;
+                    aiTopics.appendChild(li);
+                });
+                if (!aiTopics.hasChildNodes()) aiTopics.innerHTML = '<li>No specific topics were identified.</li>';
+
+
+                aiSentimentOverall.textContent = insights.sentiment?.overall || 'N/A';
+                aiSentimentAnalysis.textContent = insights.sentiment?.analysis || '';
+
+                aiActionItems.innerHTML = '';
+                 (insights.action_items || []).forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    aiActionItems.appendChild(li);
+                });
+                if (!aiActionItems.hasChildNodes()) aiActionItems.innerHTML = '<li>No action items were found.</li>';
+
+
+                // Hide loader and show results
+                aiLoadingState.classList.add('hidden');
+                aiResultsContainer.classList.remove('hidden');
+            }
+
+
+            // --- Menu Actions ---
+
+            function toggleView(view) {
+                landingPage.style.display = 'none';
+                chatView.style.display = 'none';
+                mediaView.style.display = 'none';
+                
+                if (view === 'landing') {
+                    landingPage.style.display = 'flex';
+                } else if (view === 'chat') {
+                    chatView.style.display = 'flex';
+                } else if (view === 'media') {
+                    renderMediaGrid();
+                    mediaView.style.display = 'flex';
+                }
+            }
+            
+            function renderMediaGrid() {
+                mediaGrid.innerHTML = '';
+                const mediaEntries = Object.values(mediaFiles);
+                if (mediaEntries.length === 0) {
+                    mediaGrid.innerHTML = `
+                        <div class="col-span-full h-full flex flex-col items-center justify-center text-gray-500 text-center p-4">
+                            <svg class="w-16 h-16 mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <h3 class="text-xl font-semibold">No Media Files Found</h3>
+                            <p class="mt-1">This chat export did not contain any media files.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const sortedMedia = mediaEntries.sort((a, b) => a.name.localeCompare(b.name));
+                const cardColors = [
+                    'from-green-500 to-green-700',
+                    'from-blue-500 to-blue-700',
+                    'from-orange-500 to-orange-600',
+                    'from-purple-500 to-purple-700',
+                    'from-red-500 to-red-700'
+                ];
+
+                sortedMedia.forEach((media, index) => {
+                    const container = document.createElement('div');
+                    container.className = 'media-card-container';
+                    
+                    const card = document.createElement('div');
+                    card.className = "media-card relative w-full aspect-square rounded-lg flex flex-col items-center justify-center p-2 text-center group overflow-hidden shadow-lg";
+                    
+                    let cardContent = '';
+                    
+                    if (media.mediaType === 'image') {
+                        card.classList.add('bg-black');
+                        cardContent = `<a href="${media.url}" target="_blank"><img src="${media.url}" loading="lazy" class="absolute top-0 left-0 w-full h-full object-cover" alt="${media.name}"></a>`;
+                    } else if (media.mediaType === 'video') {
+                        card.classList.add('bg-black');
+                        cardContent = `
+                            <a href="${media.url}" target="_blank">
+                                <video class="absolute top-0 left-0 w-full h-full object-cover"><source src="${media.url}#t=0.1" type="${media.type}"></video>
+                                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 backdrop-blur-sm">
+                                    <svg class="w-10 h-10 text-white opacity-80" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                                </div>
+                            </a>`;
+                    } else {
+                        const colorClass = cardColors[index % cardColors.length];
+                        let iconSVG = '';
+                        if (media.mediaType === 'audio') {
+                            iconSVG = `<svg class="w-12 h-12 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.858 15.858a5 5 0 01-2.828-7.072m12.728 0a9 9 0 012.828 9.9M7 13h2.828a1 1 0 01.707.293l2.828 2.828a1 1 0 001.414 0l2.828-2.828a1 1 0 01.707-.293H20M7 13V7a2 2 0 012-2h6a2 2 0 012 2v6m-1 4h-5l-2 2v-2H7a2 2 0 01-2-2v-2"></path></svg>`;
+                        } else { // document
+                            iconSVG = `<svg class="w-12 h-12 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>`;
+                        }
+                        card.classList.add('bg-gradient-to-br', ...colorClass.split(' '));
+                        card.style.borderBottom = '4px solid rgba(0,0,0,0.2)';
+                        cardContent = `<a href="${media.url}" target="_blank">${iconSVG}</a>`;
+                    }
+                    
+                    const filenameOverlayHTML = `
+                        <div class="absolute inset-0 flex items-center justify-center p-4 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <span class="text-white text-sm text-center">${media.name}</span>
+                        </div>`;
+                    
+                    const downloadButtonHTML = `
+                        <a href="${media.url}" download="${media.name}" title="Download file" class="absolute top-2 right-2 p-2 bg-white/80 rounded-full shadow-lg opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-110 transition-all duration-300">
+                            <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </a>
+                    `;
+
+                    const counterHTML = `
+                        <div class="absolute top-2 left-2 px-2 py-1 bg-black/60 text-white text-xs font-bold rounded-full z-10 pointer-events-none">
+                            ${index + 1}/${sortedMedia.length}
+                        </div>
+                    `;
+
+                    card.innerHTML = counterHTML + cardContent + filenameOverlayHTML + downloadButtonHTML;
+                    container.appendChild(card);
+                    mediaGrid.appendChild(container);
+                });
+            }
+
+            function exitToLanding() {
+                resetState();
+                toggleView('landing');
+            }
+            
+            function downloadAllMedia() {
+                const zip = new JSZip();
+                Object.values(mediaFiles).forEach(media => {
+                    zip.file(media.name, media.blob);
+                });
+
+                zip.generateAsync({type:"blob"})
+                    .then(function(content) {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(content);
+                        link.download = `${chatContact || 'WhatsApp'}-media.zip`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        URL.revokeObjectURL(link.href);
+                    });
+            }
+            
+            function deleteAllMedia() {
+                // Revoke old blob URLs to free up memory
+                Object.values(mediaFiles).forEach(media => URL.revokeObjectURL(media.url));
+                mediaFiles = {};
+                // Re-render the media grid to show the empty state
+                renderMediaGrid(); 
+                // Hide the media buttons as there is no media left
+                mediaViewerBtn.classList.add('hidden');
+                mediaMenuContainer.classList.add('hidden');
+            }
+
+            function showConfirmation(title, message, callback) {
+                confirmationTitle.textContent = title;
+                confirmationMessage.textContent = message;
+                confirmCallback = callback;
+                confirmationModal.classList.remove('hidden');
+            }
+            
+            async function generatePdf() {
+                toggleMenu(false);
+                pdfProgressText.textContent = "Initializing PDF generation...";
+                pdfProgressCounter.textContent = "";
+                pdfLoadingOverlay.classList.remove('hidden');
+
+                setTimeout(async () => {
+                    try {
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF({ orientation: 'p', unit: 'pt', format: 'a4' });
+                        const pageHeight = doc.internal.pageSize.getHeight();
+                        const pageWidth = doc.internal.pageSize.getWidth();
+                        const margin = 40;
+                        const maxLineWidth = pageWidth - margin * 2;
+                        let cursorY = margin;
+
+                        // --- RENDER CUSTOM HEADER ---
+                        doc.setFontSize(14);
+                        doc.setFont('Helvetica', 'bold');
+                        const headerText = customChatName || chatTitle.textContent;
+                        doc.text(headerText, pageWidth / 2, cursorY, { align: 'center' });
+                        cursorY += 10;
+                        
+                        if (customDpUrl) {
+                            const dpSize = 40;
+                            const dpX = (pageWidth / 2) - (doc.getTextWidth(headerText) / 2) - dpSize - 10;
+                            try {
+                                doc.saveGState();
+                                doc.circle(dpX + dpSize / 2, cursorY - 15, dpSize / 2, 'S'); // 'S' for stroke to see the circle boundary if needed
+                                doc.clip();
+                                doc.addImage(customDpUrl, 'JPEG', dpX, cursorY - 15 - (dpSize/2), dpSize, dpSize);
+                                doc.restoreGState();
+                            } catch(e) {
+                                console.error("Could not add image to PDF, might be a CORS or format issue.", e);
+                            }
+                        }
+                        
+                        doc.setDrawColor(200);
+                        doc.line(margin, cursorY, pageWidth - margin, cursorY);
+                        cursorY += 20;
+
+
+                        let lastDate = null;
+                        const FONT_REGULAR = 'Helvetica';
+                        const FONT_BOLD = 'Helvetica-Bold';
+                        const COLOR_IN = '#FFFFFF';
+                        const COLOR_OUT = '#DCF8C6';
+                        const COLOR_DATE_BG = '#E1F2FB';
+                        const COLOR_TEXT = '#000000';
+                        const COLOR_TIMESTAMP = '#808080';
+                        const BUBBLE_PADDING = 8;
+                        const BUBBLE_RADIUS = 8;
+
+                        doc.setFont(FONT_REGULAR, 'normal');
+
+                        for (let i = 0; i < chatMessages.length; i++) {
+                            const msg = chatMessages[i];
+
+                            if (i % 20 === 0) {
+                                pdfProgressText.textContent = "Processing messages...";
+                                pdfProgressCounter.textContent = `${i} / ${chatMessages.length}`;
+                                await new Promise(resolve => setTimeout(resolve, 0));
+                            }
+                            
+                            const msgDate = msg.timestamp.toDateString();
+                            if (msgDate !== lastDate) {
+                                const dateText = formatDateForSeparator(msg.timestamp);
+                                doc.setFontSize(10);
+                                const dateTextWidth = doc.getTextWidth(dateText);
+                                if (cursorY + 40 > pageHeight - margin) { doc.addPage(); cursorY = margin; }
+                                doc.setFillColor(COLOR_DATE_BG);
+                                doc.roundedRect((pageWidth - dateTextWidth) / 2 - BUBBLE_PADDING, cursorY + 5, dateTextWidth + BUBBLE_PADDING*2, 20, 10, 10, 'F');
+                                doc.setTextColor(COLOR_TEXT);
+                                doc.text(dateText, pageWidth / 2, cursorY + 18, { align: 'center' });
+                                cursorY += 40;
+                                lastDate = msgDate;
+                            }
+
+                            doc.setFontSize(11);
+                            const bubbleMaxWidth = maxLineWidth * 0.75;
+                            let messageText = msg.message;
+
+                            const mediaMatchPdf = messageText.match(/<attached: (.+?)>|(‎image omitted)|(‎video omitted)|(‎sticker omitted)|(‎audio omitted)|(‎document omitted)/);
+                            if (mediaMatchPdf) {
+                                const fileName = mediaMatchPdf[1];
+                                const caption = fileName ? messageText.replace(mediaMatchPdf[0], '').trim() : '';
+                                const omittedType = mediaMatchPdf[0].includes('image') ? 'Image' : 'Media';
+                                messageText = `[${fileName || omittedType + ' omitted'}]` + (caption ? `\n${caption}` : '');
+                            }
+
+                            const lines = doc.splitTextToSize(messageText, bubbleMaxWidth - BUBBLE_PADDING * 2);
+                            const textHeight = lines.length * 12;
+
+                            let senderHeight = 0;
+                            let senderName = '';
+                            if (!msg.isUser && document.getElementById('chat-title').textContent.toLowerCase().includes('group')) {
+                                senderName = msg.sender;
+                                senderHeight = 12;
+                            }
+
+                            const timeText = msg.time.replace(/:\d{2} /, ' ').replace(' AM', 'am').replace(' PM', 'pm');
+                            doc.setFontSize(9);
+                            const timeWidth = doc.getTextWidth(timeText);
+                            const timeHeight = 10;
+                            
+                            const bubbleHeight = textHeight + senderHeight + timeHeight + BUBBLE_PADDING * 1.5;
+
+                            const textWidths = lines.map(line => doc.getTextWidth(line));
+                            const maxTextWidth = Math.max(...textWidths);
+                            const lastLineWidth = textWidths[textWidths.length - 1] || 0;
+
+                            let bubbleWidth;
+                            if (lines.length === 1 && maxTextWidth + timeWidth < bubbleMaxWidth * 0.8) {
+                                bubbleWidth = maxTextWidth + timeWidth + BUBBLE_PADDING * 2 + 15;
+                            } else if (lastLineWidth + timeWidth < maxTextWidth) {
+                                bubbleWidth = maxTextWidth + BUBBLE_PADDING * 2;
+                            } else {
+                                bubbleWidth = Math.min(bubbleMaxWidth, lastLineWidth + timeWidth + BUBBLE_PADDING * 2 + 15);
+                            }
+                            bubbleWidth = Math.max(bubbleWidth, maxTextWidth + BUBBLE_PADDING * 2);
+                            bubbleWidth = Math.min(bubbleWidth, bubbleMaxWidth);
+                            
+                            if (cursorY + bubbleHeight > pageHeight - margin) { doc.addPage(); cursorY = margin; }
+
+                            const bubbleX = msg.isUser ? pageWidth - margin - bubbleWidth : margin;
+                            doc.setFillColor(msg.isUser ? COLOR_OUT : COLOR_IN);
+                            doc.roundedRect(bubbleX, cursorY, bubbleWidth, bubbleHeight, BUBBLE_RADIUS, BUBBLE_RADIUS, 'F');
+
+                            let textCursorY = cursorY + BUBBLE_PADDING;
+                            
+                            if (senderName) {
+                                doc.setFont(FONT_BOLD, 'bold');
+                                doc.setFontSize(10);
+                                doc.setTextColor('#8A2BE2');
+                                doc.text(senderName, bubbleX + BUBBLE_PADDING, textCursorY + 10);
+                                doc.setTextColor(COLOR_TEXT);
+                                textCursorY += senderHeight;
+                            }
+                            
+                            doc.setFont(FONT_REGULAR, 'normal');
+                            doc.setFontSize(11);
+                            doc.text(lines, bubbleX + BUBBLE_PADDING, textCursorY + 12);
+                            
+                            doc.setFontSize(9);
+                            doc.setTextColor(COLOR_TIMESTAMP);
+                            doc.text(timeText, bubbleX + bubbleWidth - BUBBLE_PADDING - timeWidth, cursorY + bubbleHeight - BUBBLE_PADDING);
+                            doc.setTextColor(COLOR_TEXT);
+
+                            cursorY += bubbleHeight + 10;
+                        }
+
+                        pdfProgressText.textContent = "Saving PDF...";
+                        pdfProgressCounter.textContent = "";
+                        await new Promise(resolve => setTimeout(resolve, 0));
+
+                        doc.save(`${customChatName || chatTitle.textContent || 'chat'}.pdf`);
+
+                    } catch (error) {
+                        console.error('Error generating PDF:', error);
+                        alert('An error occurred while generating the PDF.');
+                    } finally {
+                        pdfLoadingOverlay.classList.add('hidden');
+                    }
+                }, 100);
+            }
+
+            function triggerWallpaperUpload() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            imageToCropElement.src = e.target.result;
+                            wallpaperModal.classList.remove('hidden');
+                            if(cropper) cropper.destroy();
+                            
+                            const aspectRatio = currentViewMode === 'mobile' ? 9 / 16 : NaN; // NaN for free aspect ratio in desktop
+
+                            cropper = new Cropper(imageToCropElement, {
+                                aspectRatio: aspectRatio,
+                                viewMode: 1,
+                                autoCropArea: 1,
+                                responsive: true,
+                                background: false,
+                            });
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                };
+                input.click();
+            }
+
+            cancelCropBtn.addEventListener('click', () => {
+                wallpaperModal.classList.add('hidden');
+                if(cropper) cropper.destroy();
+            });
+
+            confirmCropBtn.addEventListener('click', () => {
+                const canvas = cropper.getCroppedCanvas();
+                const croppedImageUrl = canvas.toDataURL();
+                messagesContainer.style.backgroundImage = `url(${croppedImageUrl})`;
+                messagesContainer.style.backgroundSize = 'cover';
+                messagesContainer.style.backgroundPosition = 'center';
+                wallpaperModal.classList.add('hidden');
+                if(cropper) cropper.destroy();
+            });
+            
+            // --- Search Functions ---
+            function clearHighlights() {
+                const highlighted = messagesContainer.querySelectorAll('span.highlight, span.current-highlight');
+                highlighted.forEach(span => {
+                    span.replaceWith(document.createTextNode(span.textContent));
+                });
+                 // Normalize the text nodes to merge adjacent ones
+                messagesContainer.normalize();
+            }
+
+            function performSearch() {
+                clearHighlights();
+                const query = searchInput.value.trim();
+
+                if (query.length < 1) {
+                    searchMatches = [];
+                    updateSearchUI();
+                    return;
+                }
+
+                const regex = new RegExp(query.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'gi');
+                const searchableElements = messagesContainer.querySelectorAll('[data-searchable]');
+
+                searchableElements.forEach(el => {
+                    const originalHTML = el.innerHTML;
+                    const newHTML = originalHTML.replace(regex, match => `<span class="highlight">${match}</span>`);
+                    if (originalHTML !== newHTML) {
+                        el.innerHTML = newHTML;
+                    }
+                });
+
+                searchMatches = Array.from(messagesContainer.querySelectorAll('span.highlight'));
+                currentSearchIndex = searchMatches.length > 0 ? 0 : -1;
+                navigateToMatch(currentSearchIndex);
+            }
+
+            function navigateToMatch(index) {
+                if (searchMatches.length === 0) return;
+                
+                // Remove highlight from the previous match
+                if (currentSearchIndex >= 0 && searchMatches[currentSearchIndex]) {
+                    searchMatches[currentSearchIndex].classList.remove('current-highlight');
+                }
+                
+                // Handle wrapping
+                if (index < 0) {
+                    index = searchMatches.length - 1;
+                }
+                if (index >= searchMatches.length) {
+                    index = 0;
+                }
+
+                currentSearchIndex = index;
+                const currentMatch = searchMatches[currentSearchIndex];
+                
+                if (currentMatch) {
+                    currentMatch.classList.add('current-highlight');
+                    currentMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                updateSearchUI();
+            }
+            
+            function updateSearchUI() {
+                const total = searchMatches.length;
+                if (total > 0) {
+                    searchCounter.textContent = `${currentSearchIndex + 1} of ${total}`;
+                    searchPrevBtn.disabled = false;
+                    searchNextBtn.disabled = false;
+                } else {
+                    searchCounter.textContent = searchInput.value ? 'No matches' : '';
+                    searchPrevBtn.disabled = true;
+                    searchNextBtn.disabled = true;
+                }
+            }
+
+            function clearSearch() {
+                searchInput.value = '';
+                clearHighlights();
+                searchBar.classList.add('hidden');
+                chatHeaderMain.classList.remove('hidden');
+                searchMatches = [];
+                currentSearchIndex = -1;
+                updateSearchUI();
+            }
+            
+            // --- Customization ---
+            function saveCustomHeader() {
+                const newName = customNameInput.value.trim();
+                const newDp = dpPreview.src;
+                
+                if (newName) {
+                    customChatName = newName;
+                    chatTitle.textContent = newName;
+                }
+
+                if (newDp && !newDp.endsWith('AAEAAAIBRAA7')) { // Not the blank gif
+                    customDpUrl = newDp;
+                    chatDpImage.src = newDp;
+                    chatDpImage.classList.remove('hidden');
+                    defaultDpIcon.classList.add('hidden');
+                }
+                
+                customizeHeaderModal.classList.add('hidden');
+            }
+
+
+            // --- Utility Functions ---
+
+            function resetState() {
+                // Revoke old blob URLs to free up memory
+                Object.values(mediaFiles).forEach(media => URL.revokeObjectURL(media.url));
+                mediaFiles = {};
+                chatMessages = [];
+                chatContact = '';
+                chatContainsOmittedMedia = false;
+                messagesContainer.innerHTML = '';
+                mediaGrid.innerHTML = '';
+                chatTitle.textContent = '';
+                messagesContainer.style.backgroundImage = '';
+                messagesContainer.style.backgroundColor = '';
+                
+                // Reset custom header
+                customChatName = null;
+                customDpUrl = null;
+                chatDpImage.classList.add('hidden');
+                defaultDpIcon.classList.remove('hidden');
+
+                // Reset view mode
+                appContainer.classList.remove('mobile-view');
+                currentViewMode = 'desktop';
+                desktopViewBtn.classList.add('hidden');
+                mobileViewBtn.classList.remove('hidden');
+
+                if(searchBar.classList.contains('hidden') === false) {
+                    clearSearch();
+                }
+            }
+
+            function toggleMenu(forceState) {
+                if (typeof forceState === 'boolean') {
+                    dropdownMenu.classList.toggle('hidden', !forceState);
+                } else {
+                    dropdownMenu.classList.toggle('hidden');
+                }
+            }
+            
+            function formatDateForSeparator(date) {
+                const today = new Date();
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+
+                if (date.toDateString() === today.toDateString()) return 'Today';
+                if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+
+             function parseDateTime(dateStr, timeStr) {
+                // This function needs to be robust for various formats
+                const dateParts = dateStr.split(/[/.]/); // handles dd/mm/yy and dd.mm.yy
+                let day, month, year;
+                
+                // Assuming DMY format. For US-style MDY, logic needs adjustment.
+                // A more robust solution would check user locale or have a setting.
+                month = parseInt(dateParts[1], 10) - 1; 
+                day = parseInt(dateParts[0], 10);
+                year = parseInt(dateParts[2], 10);
+                if (year < 100) year += 2000; // 2-digit year
+                
+                let [time, modifier] = timeStr.split(' ');
+                let [hours, minutes] = time.split(':').map(Number);
+                
+                if (modifier) { // 12-hour clock
+                    modifier = modifier.toLowerCase();
+                    if (modifier === 'pm' && hours < 12) {
+                        hours += 12;
+                    }
+                    if (modifier === 'am' && hours === 12) {
+                        hours = 0;
+                    }
+                }
+                
+                return new Date(year, month, day, hours, minutes);
+            }
+
+        });
+    </script>
+</body>
+</html>
+
