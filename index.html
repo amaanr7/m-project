@@ -756,12 +756,20 @@
             }
 
             function processChatContent(content) {
-                const regex = /^\[?(\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}), (\d{1,2}:\d{2}(?::\d{2})?(?: [APM]{2})?)\]? (?:- )?([^:]+): ([\s\S]+)/;
+                // Regex for Android: [DD/MM/YY, HH:MM:SS] Sender: Message
+                const androidRegex = /^\[?(\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}), (\d{1,2}:\d{2}:\d{2})\]? (?:- )?([^:]+): ([\s\S]+)/;
+                // Regex for iOS: [DD/MM/YY, HH:MM:SS PM/AM] Sender: Message
+                const iosRegex = /^\[?(\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}), (\d{1,2}:\d{2}:\d{2}\s?[APM]{2})\]? (?:- )?([^:]+): ([\s\S]+)/;
                 
+                // Determine which regex to use by testing the first few lines
+                const firstLines = content.substring(0, 1000);
+                const isIOS = iosRegex.test(firstLines) && !androidRegex.test(firstLines);
+                const regex = isIOS ? iosRegex : androidRegex;
+
                 const lines = content.split('\n').filter(line => line.trim());
                 let currentMessage = null;
                 const participants = new Set();
-                chatContainsOmittedMedia = /omitted|‎/.test(content);
+                chatContainsOmittedMedia = /omitted|‎|attached/.test(content);
                 
                 lines.forEach(line => {
                     const match = line.match(regex);
@@ -1666,22 +1674,22 @@
             }
 
              function parseDateTime(dateStr, timeStr) {
-                // This function needs to be robust for various formats
-                const dateParts = dateStr.split(/[/.]/); // handles dd/mm/yy and dd.mm.yy
+                const dateParts = dateStr.split(/[/.]/);
                 let day, month, year;
                 
-                // Assuming DMY format. For US-style MDY, logic needs adjustment.
-                // A more robust solution would check user locale or have a setting.
                 month = parseInt(dateParts[1], 10) - 1; 
                 day = parseInt(dateParts[0], 10);
                 year = parseInt(dateParts[2], 10);
-                if (year < 100) year += 2000; // 2-digit year
+                if (year < 100) year += 2000;
                 
-                let [time, modifier] = timeStr.split(' ');
-                let [hours, minutes] = time.split(':').map(Number);
+                let timeParts = timeStr.replace(/\s[APM]{2}$/i, '').split(':');
+                let hours = parseInt(timeParts[0], 10);
+                let minutes = parseInt(timeParts[1], 10);
+                let seconds = timeParts.length > 2 ? parseInt(timeParts[2], 10) : 0;
                 
-                if (modifier) { // 12-hour clock
-                    modifier = modifier.toLowerCase();
+                const modifierMatch = timeStr.match(/([APM]{2})/i);
+                if (modifierMatch) {
+                    const modifier = modifierMatch[0].toLowerCase();
                     if (modifier === 'pm' && hours < 12) {
                         hours += 12;
                     }
@@ -1690,7 +1698,7 @@
                     }
                 }
                 
-                return new Date(year, month, day, hours, minutes);
+                return new Date(year, month, day, hours, minutes, seconds);
             }
 
         });
